@@ -1,19 +1,21 @@
 import { Collection } from 'discord.js';
-import { SlashCommand } from '.';
+import { Action, SlashCommand } from '.';
 import Jsoning from 'jsoning';
 
 declare global {
 	namespace NodeJS {
 		interface ProcessEnv {
-			BOT_TOKEN: string,
-			CLIENT_ID: string,
+			BOT_TOKEN: string
+			CLIENT_ID: string
+			GUILD_ID: string
 		}
 	}
 }
 
 declare module 'discord.js' {
 	export interface Client {
-		slashCommands: Collection<string, SlashCommand>
+		commands: Collection<string, SlashCommand>
+		history: Action[]
 		db: Jsoning
 	}
 }

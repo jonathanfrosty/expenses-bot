@@ -1,36 +1,32 @@
 import 'dotenv/config';
-import fs from 'fs';
+import { readdirSync } from 'fs';
+import { parse, join } from 'path';
 import Jsoning from 'jsoning';
 import { Client, GatewayIntentBits, Collection } from 'discord.js';
 
 const client = new Client({
-	intents: [
-		GatewayIntentBits.Guilds,
-		GatewayIntentBits.MessageContent,
-		GatewayIntentBits.GuildMessages,
-	],
+	intents: [GatewayIntentBits.Guilds],
 });
 
 client.db = new Jsoning('store.json');
-client.slashCommands = new Collection();
+client.commands = new Collection();
+client.history = [];
 
-const slashCommandsDir = './src/slash-commands';
-const eventsDir = './src/events';
+const commandsDir = join(__dirname, 'commands');
+const eventsDir = join(__dirname, 'events');
 
 // register slash commands
-fs.readdirSync(slashCommandsDir)
-	.filter((file) => file.endsWith('.js'))
+readdirSync(commandsDir)
 	.forEach(async (file) => {
-		const { default: slashCommand } = await import(`${slashCommandsDir}/${file}`);
-		client.slashCommands.set(file.split('.')[0], slashCommand);
+		const { default: command } = await import(join(commandsDir, file));
+		client.commands.set(parse(file).name, command);
 	});
 
 // register events
-fs.readdirSync(eventsDir)
-	.filter((file) => file.endsWith('.js'))
+readdirSync(eventsDir)
 	.forEach(async (file) => {
-		const { default: event } = await import(`${eventsDir}/${file}`);
-		client.on(file.split('.')[0], event.bind(null, client));
+		const { default: event } = await import(join(eventsDir, file));
+		client.on(parse(file).name, event);
 	});
 
 client.login(process.env.BOT_TOKEN);
