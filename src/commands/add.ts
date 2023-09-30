@@ -26,11 +26,17 @@ const command: SlashCommand = {
 		.addStringOption(option =>
 			option
 				.setName('date')
-				.setDescription(`Date (${DATE_FORMAT.toUpperCase()})`)),
+				.setDescription(`Date (${DATE_FORMAT.toUpperCase()})`))
+		.addStringOption(option =>
+			option
+				.setName('comment')
+				.setDescription('Add a comment to the expense')),
 	async execute(interaction) {
 		const userAmount = interaction.options.getNumber('amount');
 		const userDate = interaction.options.getString('date');
 		const userDay = interaction.options.getInteger('day');
+		const userComment = interaction.options.getString('comment') ?? 'base';
+
 		const { date, week } = getDates({ date: userDate, day: userDay });
 
 		const weekKey = formatDate(week);
@@ -42,7 +48,7 @@ const command: SlashCommand = {
 
 		if (message) {
 			const embedRecord = parseEmbed(message.embeds[0]);
-			embedRecord.days[dayKey] += userAmount;
+			embedRecord.days[dayKey][userComment] = (embedRecord.days[dayKey][userComment] ?? 0) + userAmount;
 			await message.edit({ embeds: [createEmbed(weekKey, embedRecord)] });
 		}
 		else {
@@ -56,12 +62,13 @@ const command: SlashCommand = {
 				newRecord.remaining += newRecord.initial;
 			}
 
-			newRecord.days[dayKey] += userAmount;
+			newRecord.days[dayKey][userComment] += userAmount;
 			await interaction.channel.send({ embeds: [createEmbed(weekKey, newRecord)] });
 		}
 
 		interaction.client.history.unshift({
 			date: dayDate,
+			comment: userComment,
 			command: 'add',
 			amount: userAmount,
 		});

@@ -25,12 +25,23 @@ const command: SlashCommand = {
 				}
 				else if (['add', 'sub'].includes(action.command)) {
 					const dayKey = `${weekday} - ${formatDate(date)}`;
-					embedRecord.days[dayKey] += action.command === 'add' ? action.amount * -1 : action.amount;
+					embedRecord.days[dayKey][action.comment ?? 'base'] +=
+						action.command === 'add'
+							? action.amount * -1
+							: action.amount;
+
+					Object.entries(embedRecord.days[dayKey]).forEach(([comment, amount]) => {
+						if (comment !== 'base' && amount === 0) {
+							delete embedRecord.days[dayKey][comment];
+						}
+					});
 				}
 
 				await message.edit({ embeds: [createEmbed(weekKey, embedRecord)] });
 
-				await interaction.editReply(`Reverted \`${action.command} ${action.amount}\` for ${action.date}`);
+				await interaction.editReply(`
+					Reverted \`${action.command} ${action.amount}${action.comment ? ` (${action.comment})` : ''}\` for ${action.date}
+				`);
 			}
 			else {
 				await interaction.editReply('No actions to undo');

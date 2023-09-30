@@ -25,11 +25,17 @@ const command: SlashCommand = {
 		.addStringOption(option =>
 			option
 				.setName('date')
-				.setDescription(`Date (${DATE_FORMAT.toUpperCase()})`)),
+				.setDescription(`Date (${DATE_FORMAT.toUpperCase()})`))
+		.addStringOption(option =>
+			option
+				.setName('comment')
+				.setDescription('Add a comment to the expense')),
 	async execute(interaction) {
 		const userAmount = interaction.options.getNumber('amount');
 		const userDate = interaction.options.getString('date');
 		const userDay = interaction.options.getInteger('day');
+		const userComment = interaction.options.getString('comment') ?? 'base';
+
 		const { date, week } = getDates({ date: userDate, day: userDay });
 
 		const weekKey = formatDate(week);
@@ -41,7 +47,15 @@ const command: SlashCommand = {
 			const embedRecord = parseEmbed(message.embeds[0]);
 			const dayDate = formatDate(date);
 			const dayKey = `${weekday} - ${dayDate}`;
-			embedRecord.days[dayKey] -= userAmount;
+			const currentValue = embedRecord.days[dayKey][userComment] ?? 0;
+
+			if (currentValue === userAmount) {
+				delete embedRecord.days[dayKey][userComment];
+			}
+			else {
+				embedRecord.days[dayKey][userComment] = currentValue - userAmount;
+			}
+
 			await message.edit({ embeds: [createEmbed(weekKey, embedRecord)] });
 
 			interaction.client.history.unshift({

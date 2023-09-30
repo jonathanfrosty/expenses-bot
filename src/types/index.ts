@@ -16,8 +16,12 @@ export interface Command {
 
 export type WeekDay = typeof WEEKDAYS[number];
 
-export type WeekDays = {
+export type Expenses = {
 	[key: string]: number
+}
+
+export type WeekDays = {
+	[key: string]: Expenses
 }
 
 export interface WeekData {
@@ -30,5 +34,6 @@ export interface Action {
 	date: string
 	command: 'add' | 'sub' | 'initial'
 	amount: number
+	comment?: string
 	prev?: number
 }

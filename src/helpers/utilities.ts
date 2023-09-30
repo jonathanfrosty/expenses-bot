@@ -39,7 +39,7 @@ export const constructNewWeekData = (start: Date): WeekData => {
 	eachDayOfInterval({ start, end: addDays(start, 4) })
 		.forEach(date => {
 			const key = `${formatDate(date, 'EEEE')} - ${formatDate(date)}`;
-			data.days[key] = 0;
+			data.days[key] = { base: 0 };
 		});
 
 	return data;
