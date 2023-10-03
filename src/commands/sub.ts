@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from 'discord.js';
-import { formatDate, getDates, getMessage, createEmbed, parseEmbed, DATE_FORMAT } from '../helpers';
+import { formatDate, getDates, getMessage, createEmbed, parseEmbed, DATE_FORMAT, cascadeUpdate } from '../helpers';
 import { SlashCommand, WeekDay } from '../types';
 
 const command: SlashCommand = {
@@ -47,16 +47,21 @@ const command: SlashCommand = {
 			const embedRecord = parseEmbed(message.embeds[0]);
 			const dayDate = formatDate(date);
 			const dayKey = `${weekday} - ${dayDate}`;
-			const currentValue = embedRecord.days[dayKey][userComment] ?? 0;
+			const currentValue = embedRecord.days[dayKey]?.[userComment] ?? 0;
 
-			if (currentValue === userAmount) {
+			if (userComment !== 'base' && currentValue === userAmount) {
 				delete embedRecord.days[dayKey][userComment];
 			}
 			else {
-				embedRecord.days[dayKey][userComment] = currentValue - userAmount;
+				embedRecord.days[dayKey] = {
+					...embedRecord.days[dayKey],
+					[userComment]: currentValue - userAmount,
+				};
 			}
 
 			await message.edit({ embeds: [createEmbed(weekKey, embedRecord)] });
+
+			await cascadeUpdate(interaction, week, userAmount * -1);
 
 			interaction.client.history.unshift({
 				date: dayDate,

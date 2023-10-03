@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from 'discord.js';
 import { subWeeks } from 'date-fns';
-import { constructNewWeekData, formatDate, getDates, getMessage, createEmbed, parseEmbed, DATE_FORMAT } from '../helpers';
+import { constructNewWeekData, formatDate, getDates, getMessage, createEmbed, parseEmbed, DATE_FORMAT, cascadeUpdate } from '../helpers';
 import { SlashCommand, WeekDay } from '../types';
 
 const command: SlashCommand = {
@@ -48,21 +48,36 @@ const command: SlashCommand = {
 
 		if (message) {
 			const embedRecord = parseEmbed(message.embeds[0]);
-			embedRecord.days[dayKey][userComment] = (embedRecord.days[dayKey][userComment] ?? 0) + userAmount;
+			const currentValue = embedRecord.days[dayKey]?.[userComment] ?? 0;
+
+			embedRecord.days[dayKey] = {
+				...embedRecord.days[dayKey],
+				[userComment]: currentValue + userAmount,
+			};
+
 			await message.edit({ embeds: [createEmbed(weekKey, embedRecord)] });
+
+			await cascadeUpdate(interaction, week, userAmount);
 		}
 		else {
 			const newRecord = constructNewWeekData(week);
+
+			// check last week's data to add any remaining amount to this week's initial amount
 			const lastWeekKey = formatDate(subWeeks(week, 1));
 			const lastWeekMessage = await getMessage(interaction, lastWeekKey);
 
 			if (lastWeekMessage) {
 				const lastWeekRecord = parseEmbed(lastWeekMessage.embeds[0]);
 				newRecord.initial += lastWeekRecord.remaining;
-				newRecord.remaining += newRecord.initial;
 			}
 
-			newRecord.days[dayKey][userComment] += userAmount;
+			const currentValue = newRecord.days[dayKey]?.[userComment] ?? 0;
+
+			newRecord.days[dayKey] = {
+				...newRecord.days[dayKey],
+				[userComment]: currentValue + userAmount,
+			};
+
 			await interaction.channel.send({ embeds: [createEmbed(weekKey, newRecord)] });
 		}
 

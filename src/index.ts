@@ -29,4 +29,4 @@ readdirSync(eventsDir)
 		client.on(parse(file).name, event);
 	});
 
-client.login(process.env.BOT_TOKEN);
+client.login(process.env.BOT_TOKEN).then(() => console.log('🤖 Bot running'));

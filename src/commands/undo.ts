@@ -25,6 +25,7 @@ const command: SlashCommand = {
 				}
 				else if (['add', 'sub'].includes(action.command)) {
 					const dayKey = `${weekday} - ${formatDate(date)}`;
+
 					embedRecord.days[dayKey][action.comment ?? 'base'] +=
 						action.command === 'add'
 							? action.amount * -1

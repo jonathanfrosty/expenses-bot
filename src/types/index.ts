@@ -27,7 +27,7 @@ export type WeekDays = {
 export interface WeekData {
 	days: WeekDays
 	initial: number
-	remaining: number
+	remaining?: number
 }
 
 export interface Action {

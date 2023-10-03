@@ -1,7 +1,8 @@
-import { format, previousDay, setDefaultOptions, startOfWeek, eachDayOfInterval, addDays, parse } from 'date-fns';
-import { Interaction } from 'discord.js';
-import { WeekData } from '../types';
+import { format, previousDay, setDefaultOptions, startOfWeek, eachDayOfInterval, addDays, parse, addWeeks } from 'date-fns';
+import { Collection, Interaction, Message } from 'discord.js';
 import { DATE_FORMAT, INITIAL_WEEKDATA } from './constants';
+import { createEmbed, parseEmbed } from './embeds';
+import { WeekData } from '../types';
 
 setDefaultOptions({ weekStartsOn: 1 });
 
@@ -28,9 +29,11 @@ export const getDates = ({ date, day }: GetDatesProps): { date: Date, week: Date
 
 export const formatDate = (date: Date, pattern?: string) => format(date, pattern ?? 'dd.MM.yyyy');
 
+const getWeekMessage = (messages: Collection<string, Message>, weekKey: string) => messages.find(message => message.embeds[0]?.title === weekKey);
+
 export const getMessage = async (interaction: Interaction, weekKey: string) => {
 	const messages = await interaction.channel.messages.fetch();
-	return messages.find(message => message.embeds[0]?.title === weekKey);
+	return getWeekMessage(messages, weekKey);
 };
 
 export const constructNewWeekData = (start: Date): WeekData => {
@@ -43,4 +46,16 @@ export const constructNewWeekData = (start: Date): WeekData => {
 		});
 
 	return data;
+};
+
+export const cascadeUpdate = async (interaction: Interaction, updatedWeek: Date, amount: number) => {
+	let week = addWeeks(updatedWeek, 1);
+	let message = null;
+
+	while ((message = getWeekMessage(interaction.channel.messages.cache, formatDate(week)))) {
+		const record = parseEmbed(message.embeds[0]);
+		record.initial -= amount;
+		await message.edit({ embeds: [createEmbed(formatDate(week), record)] });
+		week = addWeeks(week, 1);
+	}
 };

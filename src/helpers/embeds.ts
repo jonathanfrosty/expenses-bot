@@ -6,7 +6,7 @@ export const createEmbed = (week: string, data: WeekData) => {
 	const { days, initial } = data;
 
 	const initialField = {
-		name: 'Initial Capital',
+		name: 'Initial',
 		value: `${initial.toFixed(2)} CHF\n\u200B`,
 	};
 
@@ -24,7 +24,7 @@ export const createEmbed = (week: string, data: WeekData) => {
 
 	const footerFields = [
 		{ name: '\u200B\nTotal Spent', value: `${totalSpent.toFixed(2)} CHF` },
-		{ name: 'Remaining Capital', value: `${remaining.toFixed(2)} CHF` },
+		{ name: 'Remaining', value: `${remaining.toFixed(2)} CHF` },
 	];
 
 	const fields = [initialField, ...dayFields, ...footerFields];
@@ -46,7 +46,7 @@ export const parseEmbed = (embed: Embed): WeekData => {
 		initial: getFieldAmount(fields, 'Initial'),
 		days: fields.reduce((days, cur) => {
 			if (WEEKDAYS.some(day => cur.name.startsWith(day))) {
-				const reg = /(\d*\.\d*) CHF.?(?:\(([^()]*)\))*/ig;
+				const reg = /(-?\d*\.\d*) CHF.?(?:\(([^()]*)\))*/ig;
 				const matches = cur.value.matchAll(reg);
 
 				for (const match of matches) {
