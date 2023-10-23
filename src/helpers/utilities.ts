@@ -36,6 +36,11 @@ export const getMessage = async (interaction: Interaction, weekKey: string) => {
 	return getWeekMessage(messages, weekKey);
 };
 
+export const getLastMessage = async (interaction: Interaction) => {
+	const messages = await interaction.channel.messages.fetch({ limit: 2 });
+	return messages.last();
+};
+
 export const constructNewWeekData = (start: Date): WeekData => {
 	const data = structuredClone(INITIAL_WEEKDATA);
 

@@ -3,7 +3,6 @@ import { SlashCommand, WeekDay } from '../types';
 import { formatDate, getDates, getMessage, createEmbed, parseEmbed } from '../helpers';
 
 const command: SlashCommand = {
-	keepReply: true,
 	data: new SlashCommandBuilder()
 		.setName('undo')
 		.setDescription('Undo the last action'),
@@ -39,17 +38,7 @@ const command: SlashCommand = {
 				}
 
 				await message.edit({ embeds: [createEmbed(weekKey, embedRecord)] });
-
-				await interaction.editReply(`
-					Reverted \`${action.command} ${action.amount}${action.comment ? ` (${action.comment})` : ''}\` for ${action.date}
-				`);
 			}
-			else {
-				await interaction.editReply('No actions to undo');
-			}
-		}
-		else {
-			await interaction.editReply('No actions to undo');
 		}
 	},
 };

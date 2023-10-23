@@ -1,6 +1,5 @@
 import { SlashCommandBuilder } from 'discord.js';
-import { subWeeks } from 'date-fns';
-import { constructNewWeekData, formatDate, getDates, getMessage, createEmbed, parseEmbed, DATE_FORMAT, cascadeUpdate } from '../helpers';
+import { constructNewWeekData, formatDate, getDates, getMessage, createEmbed, parseEmbed, DATE_FORMAT, cascadeUpdate, getLastMessage } from '../helpers';
 import { SlashCommand, WeekDay } from '../types';
 
 const command: SlashCommand = {
@@ -63,12 +62,11 @@ const command: SlashCommand = {
 			const newRecord = constructNewWeekData(week);
 
 			// check last week's data to add any remaining amount to this week's initial amount
-			const lastWeekKey = formatDate(subWeeks(week, 1));
-			const lastWeekMessage = await getMessage(interaction, lastWeekKey);
+			const lastMessage = await getLastMessage(interaction);
 
-			if (lastWeekMessage) {
-				const lastWeekRecord = parseEmbed(lastWeekMessage.embeds[0]);
-				newRecord.initial += lastWeekRecord.remaining;
+			if (lastMessage) {
+				const lastMessageRecord = parseEmbed(lastMessage.embeds[0]);
+				newRecord.initial += lastMessageRecord.remaining;
 			}
 
 			const currentValue = newRecord.days[dayKey]?.[userComment] ?? 0;

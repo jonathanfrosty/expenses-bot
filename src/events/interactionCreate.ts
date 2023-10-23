@@ -13,7 +13,7 @@ export default async (interaction: Interaction) => {
 	try {
 		await interaction.deferReply();
 		await command.execute(interaction);
-		if (!command.keepReply) await interaction.deleteReply();
+		await interaction.deleteReply();
 	}
 	catch (error) {
 		console.error(error);
