@@ -1,6 +1,6 @@
 import { format, previousDay, setDefaultOptions, startOfWeek, eachDayOfInterval, addDays, parse, addWeeks } from 'date-fns';
 import { Collection, Interaction, Message } from 'discord.js';
-import { DATE_FORMAT, INITIAL_WEEKDATA } from './constants';
+import { DATE_FORMAT, EXPENSES_BOT_ID, INITIAL_WEEKDATA } from './constants';
 import { createEmbed, parseEmbed } from './embeds';
 import { WeekData } from '../types';
 
@@ -37,8 +37,9 @@ export const getMessage = async (interaction: Interaction, weekKey: string) => {
 };
 
 export const getLastMessage = async (interaction: Interaction) => {
-	const messages = await interaction.channel.messages.fetch({ limit: 2 });
-	return messages.last();
+	const messages = await interaction.channel.messages.fetch({ limit: 10 });
+	const embedMessages = messages.filter(message => message.embeds.length && message.author.id === EXPENSES_BOT_ID);
+	return embedMessages.first();
 };
 
 export const constructNewWeekData = (start: Date): WeekData => {
