@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from 'discord.js';
-import { formatDate, getDates, getMessage, createEmbed, parseEmbed, DATE_FORMAT, cascadeUpdate } from '../helpers';
+import { formatDate, getDates, getMessage, createEmbed, parseEmbed, DATE_FORMAT, cascadeUpdate, DAY_CHOICES } from '../helpers';
 import { SlashCommand, WeekDay } from '../types';
 
 const command: SlashCommand = {
@@ -15,13 +15,7 @@ const command: SlashCommand = {
 			option
 				.setName('day')
 				.setDescription('Most recent day of the week')
-				.addChoices(
-					{ name: 'Monday', value: 1 },
-					{ name: 'Tuesday', value: 2 },
-					{ name: 'Wednesday', value: 3 },
-					{ name: 'Thursday', value: 4 },
-					{ name: 'Friday', value: 5 },
-				))
+				.addChoices(...DAY_CHOICES))
 		.addStringOption(option =>
 			option
 				.setName('date')

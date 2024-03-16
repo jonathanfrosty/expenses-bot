@@ -19,7 +19,7 @@ export const getDates = ({ date, day }: GetDatesProps): { date: Date, week: Date
 
 	const today = new Date();
 
-	if (day) {
+	if (day >= 0) {
 		const previous = previousDay(today, day);
 		return { date: previous, week: startOfWeek(previous) };
 	}
