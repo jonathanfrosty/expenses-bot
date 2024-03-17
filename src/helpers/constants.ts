@@ -21,4 +21,4 @@ export const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
 
 export const DATE_FORMAT = 'dd.MM.yyyy';
 
-export const THEME_COLOR = '#4B88D8';
+export const THEME_COLOR = 4950232;

@@ -1,4 +1,5 @@
 import { Interaction } from 'discord.js';
+import { createErrorEmbed } from '../helpers';
 
 export default async (interaction: Interaction) => {
 	if (!interaction.isChatInputCommand()) return;
@@ -15,13 +16,15 @@ export default async (interaction: Interaction) => {
 		await command.execute(interaction);
 		await interaction.deleteReply();
 	}
-	catch (error) {
-		console.error(error);
+	catch (error: unknown) {
+		console.error(new Date().toUTCString(), error);
+		const embeds = [createErrorEmbed((error as Error).message)];
+
 		if (interaction.replied || interaction.deferred) {
-			await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
+			await interaction.followUp({ embeds });
 		}
 		else {
-			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+			await interaction.reply({ embeds });
 		}
 	}
 };

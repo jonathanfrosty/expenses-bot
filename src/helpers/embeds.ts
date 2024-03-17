@@ -61,3 +61,9 @@ export const parseEmbed = (embed: Embed): WeekData => {
 		remaining: getFieldAmount(fields, 'Remaining'),
 	};
 };
+
+export const createErrorEmbed = (message: string) =>
+	new EmbedBuilder()
+		.setTitle('⚠️   An error occurred')
+		.setDescription(`\`${message}\``)
+		.setColor('Red');
