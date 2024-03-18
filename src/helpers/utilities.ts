@@ -1,4 +1,4 @@
-import { format, previousDay, setDefaultOptions, startOfWeek, eachDayOfInterval, addDays, parse, addWeeks } from 'date-fns';
+import { format, previousDay, setDefaultOptions, startOfWeek, eachDayOfInterval, addDays, parse, addWeeks, Day } from 'date-fns';
 import { Collection, Interaction, Message } from 'discord.js';
 import { DATE_FORMAT, EXPENSES_BOT_ID, INITIAL_WEEKDATA, THEME_COLOR } from './constants';
 import { createEmbed, parseEmbed } from './embeds';
@@ -8,7 +8,7 @@ setDefaultOptions({ weekStartsOn: 1 });
 
 interface GetDatesProps {
 	date?: string
-	day?: number
+	day?: Day
 }
 
 export const getDates = ({ date, day }: GetDatesProps): { date: Date, week: Date } => {

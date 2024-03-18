@@ -22,9 +22,8 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "date-fns": "^2.30.0",
-    "discord.js": "^14.13.0",
-    "dotenv": "^16.3.1",
-    "jsoning": "^0.13.23"
+    "date-fns": "^3.5.0",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.4.5"
   }
 }

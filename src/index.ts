@@ -1,14 +1,12 @@
 import 'dotenv/config';
 import { readdirSync } from 'fs';
 import { parse, join } from 'path';
-import Jsoning from 'jsoning';
 import { Client, GatewayIntentBits, Collection } from 'discord.js';
 
 const client = new Client({
 	intents: [GatewayIntentBits.Guilds],
 });
 
-client.db = new Jsoning('store.json');
 client.commands = new Collection();
 client.history = [];
 

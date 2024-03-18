@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from 'discord.js';
+import { Day } from 'date-fns';
 import { formatDate, getDates, getMessage, createEmbed, parseEmbed, DATE_FORMAT, cascadeUpdate, DAY_CHOICES } from '../helpers';
 import { SlashCommand, WeekDay } from '../types';
 
@@ -27,7 +28,7 @@ const command: SlashCommand = {
 	async execute(interaction) {
 		const userAmount = interaction.options.getNumber('amount');
 		const userDate = interaction.options.getString('date');
-		const userDay = interaction.options.getInteger('day');
+		const userDay = interaction.options.getInteger('day') as Day;
 		const userComment = interaction.options.getString('comment') ?? 'base';
 
 		const { date, week } = getDates({ date: userDate, day: userDay });

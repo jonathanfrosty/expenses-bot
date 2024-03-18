@@ -1,5 +1,5 @@
 import { APIEmbedField, Embed, EmbedBuilder } from 'discord.js';
-import { WeekData, WeekDays } from '../types';
+import { WeekData, WeekDay, WeekDays } from '../types';
 import { THEME_COLOR, WEEKDAYS } from './constants';
 
 export const createEmbed = (week: string, data: WeekData) => {
@@ -15,6 +15,14 @@ export const createEmbed = (week: string, data: WeekData) => {
 			return `${amount.toFixed(2)} CHF${comment !== 'base' ? ` (${comment})` : ''}\n`;
 		});
 		return { name: day, value: expensesStrings.join('') };
+	});
+
+	// ensure weekdays are displayed in order.
+	// for example, if Saturday is added after Sunday, they would be in the wrong order
+	dayFields.sort((a, b) => {
+		const weekDayA = a.name.split(' - ')[0] as WeekDay;
+		const weekDayB = b.name.split(' - ')[0] as WeekDay;
+		return WEEKDAYS.indexOf(weekDayA) - WEEKDAYS.indexOf(weekDayB);
 	});
 
 	const totalSpent = Object.values(days).reduce(

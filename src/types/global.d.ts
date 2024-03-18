@@ -1,6 +1,5 @@
 import { Collection } from 'discord.js';
 import { Action, SlashCommand } from '.';
-import Jsoning from 'jsoning';
 
 declare global {
 	namespace NodeJS {
@@ -16,6 +15,5 @@ declare module 'discord.js' {
 	export interface Client {
 		commands: Collection<string, SlashCommand>
 		history: Action[]
-		db: Jsoning
 	}
 }
