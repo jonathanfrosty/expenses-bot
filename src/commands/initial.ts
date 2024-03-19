@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from 'discord.js';
-import { formatDate, getDates, getMessage, createEmbed, parseEmbed, DATE_FORMAT } from '../helpers';
+import { formatDate, getDates, getMessage, createEmbed, parseEmbed, DATE_FORMAT, cascadeUpdate } from '../helpers';
 import { SlashCommand } from '../types';
 
 const command: SlashCommand = {
@@ -26,8 +26,12 @@ const command: SlashCommand = {
 		if (message) {
 			const embedRecord = parseEmbed(message.embeds[0]);
 			const original = embedRecord.initial;
+			const amountChange = userAmount - original;
 			embedRecord.initial = userAmount;
+
 			await message.edit({ embeds: [createEmbed(weekKey, embedRecord)] });
+
+			await cascadeUpdate(interaction, week, amountChange);
 
 			interaction.client.history.unshift({
 				date: weekKey,

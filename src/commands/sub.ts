@@ -56,7 +56,7 @@ const command: SlashCommand = {
 
 			await message.edit({ embeds: [createEmbed(weekKey, embedRecord)] });
 
-			await cascadeUpdate(interaction, week, userAmount * -1);
+			await cascadeUpdate(interaction, week, userAmount);
 
 			interaction.client.history.unshift({
 				date: dayDate,

@@ -51,7 +51,7 @@ const command: SlashCommand = {
 
 			await message.edit({ embeds: [createEmbed(weekKey, embedRecord)] });
 
-			await cascadeUpdate(interaction, week, userAmount);
+			await cascadeUpdate(interaction, week, -userAmount);
 		}
 		else {
 			const newRecord = constructNewWeekData(week);

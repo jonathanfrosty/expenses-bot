@@ -63,7 +63,7 @@ export const cascadeUpdate = async (interaction: Interaction, updatedWeek: Date,
 
 	while ((message = getWeekMessage(interaction.channel.messages.cache, formatDate(week)))) {
 		const record = parseEmbed(message.embeds[0]);
-		record.initial -= amount;
+		record.initial += amount;
 		await message.edit({ embeds: [createEmbed(formatDate(week), record)] });
 		week = addWeeks(week, 1);
 	}
