@@ -32,13 +32,14 @@ const command: SlashCommand = {
 						? action.amount
 						: action.amount * -1;
 
-					embedRecord.days[dayKey][action.comment ?? 'base'] -= amountChange;
-
-					Object.entries(embedRecord.days[dayKey]).forEach(([comment, amount]) => {
-						if (comment !== 'base' && amount === 0) {
-							delete embedRecord.days[dayKey][comment];
-						}
-					});
+					if (embedRecord.days[dayKey]) {
+						embedRecord.days[dayKey][action.comment ?? 'base'] -= amountChange;
+					}
+					else {
+						embedRecord.days[dayKey] = {
+							[action.comment ?? 'base']: Math.abs(amountChange),
+						};
+					}
 				}
 
 				await message.edit({ embeds: [createEmbed(weekKey, embedRecord)] });

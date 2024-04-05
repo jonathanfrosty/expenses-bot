@@ -58,10 +58,11 @@ export const constructNewWeekData = (start: Date): WeekData => {
 };
 
 export const cascadeUpdate = async (interaction: Interaction, updatedWeek: Date, amount: number) => {
+	const messages = await interaction.channel.messages.fetch();
 	let week = addWeeks(updatedWeek, 1);
 	let message = null;
 
-	while ((message = getWeekMessage(interaction.channel.messages.cache, formatDate(week)))) {
+	while ((message = getWeekMessage(messages, formatDate(week)))) {
 		const record = parseEmbed(message.embeds[0]);
 		record.initial += amount;
 		await message.edit({ embeds: [createEmbed(formatDate(week), record)] });
