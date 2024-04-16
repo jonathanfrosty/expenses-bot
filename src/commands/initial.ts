@@ -25,6 +25,8 @@ const command: SlashCommand = {
 
 		if (message) {
 			const embedRecord = parseEmbed(message.embeds[0]);
+			const originalState = structuredClone(embedRecord);
+
 			const original = embedRecord.initial;
 			const amountChange = userAmount - original;
 			embedRecord.initial = userAmount;
@@ -33,12 +35,7 @@ const command: SlashCommand = {
 
 			await cascadeUpdate(interaction, week, amountChange);
 
-			interaction.client.history.unshift({
-				date: weekKey,
-				command: 'initial',
-				amount: userAmount,
-				prev: original,
-			});
+			interaction.client.history.unshift({ weekKey, state: originalState });
 		}
 	},
 };

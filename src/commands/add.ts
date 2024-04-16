@@ -40,8 +40,12 @@ const command: SlashCommand = {
 		const dayDate = formatDate(date);
 		const dayKey = `${weekday} - ${dayDate}`;
 
+		let originalState = null;
+
 		if (message) {
 			const embedRecord = parseEmbed(message.embeds[0]);
+			originalState = structuredClone(embedRecord);
+
 			const currentValue = embedRecord.days[dayKey]?.[userComment] ?? 0;
 
 			embedRecord.days[dayKey] = {
@@ -55,6 +59,7 @@ const command: SlashCommand = {
 		}
 		else {
 			const newRecord = constructNewWeekData(week);
+			originalState = structuredClone(newRecord);
 
 			// check last week's data to add any remaining amount to this week's initial amount
 			const lastMessage = await getLastMessage(interaction);
@@ -74,12 +79,7 @@ const command: SlashCommand = {
 			await interaction.channel.send({ embeds: [createEmbed(weekKey, newRecord)] });
 		}
 
-		interaction.client.history.unshift({
-			date: dayDate,
-			comment: userComment,
-			command: 'add',
-			amount: userAmount,
-		});
+		interaction.client.history.unshift({ weekKey, state: originalState });
 	},
 };
 

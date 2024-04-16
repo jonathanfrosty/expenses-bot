@@ -23,10 +23,7 @@ export interface WeekData {
 	remaining?: number
 }
 
-export interface Action {
-	date: string
-	command: 'add' | 'sub' | 'initial'
-	amount: number
-	comment?: string
-	prev?: number
+export interface MessageState {
+  weekKey: string;
+  state: WeekData;
 }

@@ -40,6 +40,8 @@ const command: SlashCommand = {
 
 		if (message) {
 			const embedRecord = parseEmbed(message.embeds[0]);
+			const originalState = structuredClone(embedRecord);
+
 			const dayDate = formatDate(date);
 			const dayKey = `${weekday} - ${dayDate}`;
 			const currentValue = embedRecord.days[dayKey]?.[userComment] ?? 0;
@@ -58,11 +60,7 @@ const command: SlashCommand = {
 
 			await cascadeUpdate(interaction, week, userAmount);
 
-			interaction.client.history.unshift({
-				date: dayDate,
-				command: 'sub',
-				amount: userAmount,
-			});
+			interaction.client.history.unshift({ weekKey, state: originalState });
 		}
 	},
 };

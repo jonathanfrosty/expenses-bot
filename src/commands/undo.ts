@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from 'discord.js';
-import { SlashCommand, WeekDay } from '../types';
-import { formatDate, getDates, getMessage, createEmbed, parseEmbed, cascadeUpdate } from '../helpers';
+import { SlashCommand } from '../types';
+import { getDates, getMessage, createEmbed, cascadeUpdate, parseEmbed } from '../helpers';
 
 const command: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -10,40 +10,15 @@ const command: SlashCommand = {
 		const action = interaction.client.history.shift();
 
 		if (action) {
-			const { date, week } = getDates({ date: action.date });
-			const weekKey = formatDate(week);
-			const weekday = formatDate(date, 'EEEE') as WeekDay;
-
+			const { weekKey, state } = action;
 			const message = await getMessage(interaction, weekKey);
 
 			if (message) {
-				const embedRecord = parseEmbed(message.embeds[0]);
+				await message.edit({ embeds: [createEmbed(weekKey, state)] });
 
-				let amountChange = 0;
-
-				if (action.command === 'initial') {
-					embedRecord.initial = action.prev;
-					amountChange = action.prev - action.amount;
-				}
-				else if (['add', 'sub'].includes(action.command)) {
-					const dayKey = `${weekday} - ${formatDate(date)}`;
-
-					amountChange = action.command === 'add'
-						? action.amount
-						: action.amount * -1;
-
-					if (embedRecord.days[dayKey]) {
-						embedRecord.days[dayKey][action.comment ?? 'base'] -= amountChange;
-					}
-					else {
-						embedRecord.days[dayKey] = {
-							[action.comment ?? 'base']: Math.abs(amountChange),
-						};
-					}
-				}
-
-				await message.edit({ embeds: [createEmbed(weekKey, embedRecord)] });
-
+				const { week } = getDates({ date: weekKey });
+				const { initial } = parseEmbed(message.embeds[0]);
+				const amountChange = state.initial - initial;
 				await cascadeUpdate(interaction, week, amountChange);
 			}
 		}
