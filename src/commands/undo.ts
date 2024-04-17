@@ -7,7 +7,7 @@ const command: SlashCommand = {
 		.setName('undo')
 		.setDescription('Undo the last action'),
 	async execute(interaction) {
-		const entry = interaction.client.history.shift();
+		const entry = interaction.client.history.pop();
 
 		if (entry) {
 			const { weekKey, state } = entry;

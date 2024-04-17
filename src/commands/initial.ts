@@ -35,7 +35,7 @@ const command: SlashCommand = {
 
 			await cascadeUpdate(interaction, week, amountChange);
 
-			interaction.client.history.unshift({ weekKey, state: originalState });
+			interaction.client.history.push({ weekKey, state: originalState });
 		}
 	},
 };

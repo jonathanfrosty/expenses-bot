@@ -79,7 +79,7 @@ const command: SlashCommand = {
 			await interaction.channel.send({ embeds: [createEmbed(weekKey, newRecord)] });
 		}
 
-		interaction.client.history.unshift({ weekKey, state: originalState });
+		interaction.client.history.push({ weekKey, state: originalState });
 	},
 };
 

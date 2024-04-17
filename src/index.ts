@@ -2,13 +2,15 @@ import 'dotenv/config';
 import { readdirSync } from 'fs';
 import { parse, join } from 'path';
 import { Client, GatewayIntentBits, Collection } from 'discord.js';
+import { MessageState } from './types';
+import { CappedStack } from './helpers';
 
 const client = new Client({
 	intents: [GatewayIntentBits.Guilds],
 });
 
 client.commands = new Collection();
-client.history = [];
+client.history = new CappedStack<MessageState>(100);
 
 const commandsDir = join(__dirname, 'commands');
 const eventsDir = join(__dirname, 'events');
