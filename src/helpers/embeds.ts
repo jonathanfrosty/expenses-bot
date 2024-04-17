@@ -12,7 +12,7 @@ export const createEmbed = (week: string, data: WeekData) => {
 
 	const dayEntries = Object.entries(days)
 		.reduce<[string, Expenses][]>((acc, [day, expenses]) => {
-			// remove weekend entries if the base entry is 0
+			// remove weekend entries if all entries are 0
 			const isWeekend = day.startsWith('Saturday') || day.startsWith('Sunday');
 			if (isWeekend && Object.values(expenses).every(expense => expense === 0)) {
 				return acc;
@@ -21,7 +21,7 @@ export const createEmbed = (week: string, data: WeekData) => {
 			const entries = Object.entries(expenses);
 			if (entries.length > 1) {
 				entries.forEach(([comment, amount]) => {
-					if (amount === 0) {
+					if (amount === 0 && comment === 'base') {
 						delete expenses[comment];
 					}
 				});
