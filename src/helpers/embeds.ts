@@ -72,7 +72,7 @@ export const createEmbed = (week: string, data: WeekData) => {
 };
 
 const getFieldAmount = (fields: APIEmbedField[], name: string) => {
-	return +fields.find(field => field.name.includes(name)).value.split(' ')[0];
+	return +fields.find(field => field.name.includes(name))?.value.split(' ')[0] ?? 0;
 };
 
 export const parseEmbed = (embed: Embed): WeekData => {
