@@ -61,12 +61,12 @@ const command: SlashCommand = {
 			const newRecord = constructNewWeekData(week);
 			originalState = structuredClone(newRecord);
 
-			// check last week's data to add any remaining amount to this week's initial amount
+			// check last week's data to add any remaining amount to this week's funds
 			const lastMessage = await getLastMessage(interaction);
 
 			if (lastMessage) {
 				const lastMessageRecord = parseEmbed(lastMessage.embeds[0]);
-				newRecord.initial += lastMessageRecord.remaining;
+				newRecord.funds += lastMessageRecord.remaining;
 			}
 
 			const currentValue = newRecord.days[dayKey]?.[userComment] ?? 0;

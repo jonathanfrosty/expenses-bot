@@ -11,7 +11,7 @@ interface GetDatesProps {
 	day?: Day
 }
 
-export const getDates = ({ date, day }: GetDatesProps): { date: Date, week: Date } => {
+export const getDates = ({ date, day = null }: GetDatesProps): { date: Date, week: Date } => {
 	if (date) {
 		const then = parse(date, DATE_FORMAT, new Date());
 		return { date: then, week: startOfWeek(then) };
@@ -64,7 +64,7 @@ export const cascadeUpdate = async (interaction: Interaction, updatedWeek: Date,
 
 	while ((message = getWeekMessage(messages, formatDate(week)))) {
 		const record = parseEmbed(message.embeds[0]);
-		record.initial += amount;
+		record.funds += amount;
 		await message.edit({ embeds: [createEmbed(formatDate(week), record)] });
 		week = addWeeks(week, 1);
 	}

@@ -19,7 +19,8 @@ export type WeekDays = {
 
 export interface WeekData {
 	days: WeekDays
-	initial: number
+	income: number
+  funds: number
 	remaining?: number
 }
 

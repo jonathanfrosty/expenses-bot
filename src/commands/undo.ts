@@ -17,8 +17,8 @@ const command: SlashCommand = {
 				await message.edit({ embeds: [createEmbed(weekKey, state)] });
 
 				const { week } = getDates({ date: weekKey });
-				const { initial } = parseEmbed(message.embeds[0]);
-				const amountChange = state.initial - initial;
+				const { funds } = parseEmbed(message.embeds[0]);
+				const amountChange = state.funds - funds;
 				await cascadeUpdate(interaction, week, amountChange);
 			}
 		}

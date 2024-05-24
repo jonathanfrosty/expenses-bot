@@ -3,11 +3,16 @@ import { Expenses, WeekData, WeekDay, WeekDays } from '../types';
 import { THEME_COLOR, WEEKDAYS } from './constants';
 
 export const createEmbed = (week: string, data: WeekData) => {
-	const { days, initial } = data;
+	const { days, income, funds } = data;
 
-	const initialField = {
-		name: 'Initial',
-		value: `${initial.toFixed(2)} CHF\n\u200B`,
+	const incomeField = {
+		name: 'Income',
+		value: `${income.toFixed(2)} CHF\n`,
+	};
+
+	const fundsField = {
+		name: 'Funds',
+		value: `${funds.toFixed(2)} CHF\n\u200B`,
 	};
 
 	const dayEntries = Object.entries(days)
@@ -51,14 +56,14 @@ export const createEmbed = (week: string, data: WeekData) => {
 	const totalSpent = Object.values(days).reduce(
 		(daySum, day) => daySum + Object.values(day).reduce((sum, cur) => sum + cur, 0)
 		, 0);
-	const remaining = initial - totalSpent;
+	const remaining = funds - totalSpent;
 
 	const footerFields = [
 		{ name: '\u200B\nTotal Spent', value: `${totalSpent.toFixed(2)} CHF` },
 		{ name: 'Remaining', value: `${remaining.toFixed(2)} CHF` },
 	];
 
-	const fields = [initialField, ...dayFields, ...footerFields];
+	const fields = [incomeField, fundsField, ...dayFields, ...footerFields];
 
 	return new EmbedBuilder()
 		.setTitle(week)
@@ -74,7 +79,8 @@ export const parseEmbed = (embed: Embed): WeekData => {
 	const { fields } = embed;
 
 	return {
-		initial: getFieldAmount(fields, 'Initial'),
+		income: getFieldAmount(fields, 'Income'),
+		funds: getFieldAmount(fields, 'Funds'),
 		days: fields.reduce((days, cur) => {
 			if (WEEKDAYS.some(day => cur.name.startsWith(day))) {
 				const reg = /(-?\d*\.\d*) CHF.?(?:\(([^()]*)\))*/ig;

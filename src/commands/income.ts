@@ -4,12 +4,12 @@ import { SlashCommand } from '../types';
 
 const command: SlashCommand = {
 	data: new SlashCommandBuilder()
-		.setName('initial')
-		.setDescription('Set the initial capital, optionally for a given week')
+		.setName('income')
+		.setDescription('Set the income amount, optionally for a given week')
 		.addNumberOption(option =>
 			option
 				.setName('amount')
-				.setDescription('Amount of money')
+				.setDescription('Income for the week')
 				.setRequired(true))
 		.addStringOption(option =>
 			option
@@ -18,6 +18,7 @@ const command: SlashCommand = {
 	async execute(interaction) {
 		const userAmount = interaction.options.getNumber('amount');
 		const userWeek = interaction.options.getString('week');
+
 		const { week } = getDates({ date: userWeek });
 
 		const weekKey = formatDate(week);
@@ -27,9 +28,10 @@ const command: SlashCommand = {
 			const embedRecord = parseEmbed(message.embeds[0]);
 			const originalState = structuredClone(embedRecord);
 
-			const original = embedRecord.initial;
+			const original = embedRecord.income;
 			const amountChange = userAmount - original;
-			embedRecord.initial = userAmount;
+			embedRecord.income = userAmount;
+			embedRecord.funds += amountChange;
 
 			await message.edit({ embeds: [createEmbed(weekKey, embedRecord)] });
 
